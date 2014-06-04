@@ -1,0 +1,7 @@
+watch: 
+
+- pattern: "*.yaml"
+  command: ""
+
+- pattern: "*.go"
+  command: "echo hello world, go"
