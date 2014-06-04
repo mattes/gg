@@ -1,6 +1,8 @@
 GG
 ==
 
+Watch file changes and exec commands (YAML + GoLang)
+
 
 ### Installation
 ```
