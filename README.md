@@ -12,7 +12,7 @@ go install
 
 ### Usage
 
-Create ``YAML`` file in your working directory.
+Create ``gg.yaml`` file in your working directory.
 
 ```yaml
 watch:
