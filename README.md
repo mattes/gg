@@ -7,8 +7,6 @@ Watch file changes and exec commands (YAML + GoLang)
 ### Installation
 ```
 go get github.com/mattes/gg
-go build .
-go install
 ```
 
 
