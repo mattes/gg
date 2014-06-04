@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path"
 	"time"
 )
@@ -64,6 +65,15 @@ func main() {
 	err = watcher.Watch(currentDir)
 
 	commandTriggerDelays := make(map[string]time.Time)
+
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, os.Interrupt)
+	go func() {
+		for _ = range ch {
+			fmt.Println("\nAuf Wiederschaun!")
+			os.Exit(0)
+		}
+	}()
 
 	for {
 		select {
