@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path"
+	"strings"
 	"time"
 )
 
@@ -21,9 +22,14 @@ watch:
 
 - pattern: "*.txt"
   command: "echo hello world, txt"
+  bindkey: t @todo triggers this command when running gg
 
 - pattern: "*.go"
   command: "echo hello world, go"
+  bindkey: g @todo triggers this command when running gg
+
+- pattern: "(.*)_test.go" @todo use pattern matches in command
+  command: "go run $1_test.go"
 ```
 */
 
@@ -36,7 +42,7 @@ type Config struct {
 
 func main() {
 	commandTriggerDelay := 250 * time.Millisecond
-	currentDir, err := os.Getwd()
+	workingDir, err := os.Getwd()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Unable to get current directory. Wtf?")
 		os.Exit(1)
@@ -62,7 +68,7 @@ func main() {
 		panic(err)
 	}
 
-	err = watcher.Watch(currentDir)
+	err = watcher.Watch(workingDir)
 
 	commandTriggerDelays := make(map[string]time.Time)
 
@@ -70,7 +76,7 @@ func main() {
 	signal.Notify(ch, os.Interrupt)
 	go func() {
 		for _ = range ch {
-			fmt.Println("\nAuf Wiederschaun!")
+			fmt.Println(" Auf Wiederschaun!")
 			os.Exit(0)
 		}
 	}()
@@ -94,7 +100,7 @@ func main() {
 						}
 
 						if commandTriggerDelays[ev.Name].Add(commandTriggerDelay).Before(time.Now()) {
-							// log.Printf("Run %v", ev.Name)
+							log.Printf("Run %v ...\n", strings.Replace(ev.Name, workingDir+"/", "", 1))
 							cmd := exec.Command("sh", "-c", w.Command)
 							cmd.Stdin = os.Stdin
 							cmd.Stdout = os.Stdout
