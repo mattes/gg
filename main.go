@@ -14,6 +14,10 @@ import (
 	"time"
 )
 
+const (
+	config = ".gg.yaml"
+)
+
 /*
 Example gg.yaml
 
@@ -48,12 +52,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	if _, err := os.Stat("gg.yaml"); err != nil {
-		fmt.Fprintln(os.Stderr, "Please create gg.yaml.")
+	if _, err := os.Stat(config); err != nil {
+		fmt.Fprintf(os.Stderr, "Please create %s.\n", config)
 		os.Exit(1)
 	}
 
-	f, err := ioutil.ReadFile("gg.yaml")
+	f, err := ioutil.ReadFile(config)
 	if err != nil {
 		panic(err)
 	}
