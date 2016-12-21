@@ -25,11 +25,14 @@ Example gg.yaml
 watch:
 
 - pattern: "*.txt"
-  command: "echo hello world, txt"
+  commands:
+    hello: "echo hello world, txt"
+	hello2: echo again, mate"
   bindkey: t @todo triggers this command when running gg
 
 - pattern: "*.go"
-  command: "echo hello world, go"
+  commands:
+    mytest: "echo hello world, go"
   bindkey: g @todo triggers this command when running gg
 
 - pattern: "(.*)_test.go" @todo use pattern matches in command
@@ -39,8 +42,8 @@ watch:
 
 type Config struct {
 	Watch []struct {
-		Pattern string
-		Command string
+		Pattern  string
+		Commands map[string]string
 	}
 }
 
@@ -104,16 +107,18 @@ func main() {
 						}
 
 						if commandTriggerDelays[ev.Name].Add(commandTriggerDelay).Before(time.Now()) {
-							log.Printf("Run %v ...\n", strings.Replace(ev.Name, workingDir+"/", "", 1))
-							cmd := exec.Command("sh", "-c", w.Command)
-							cmd.Stdin = os.Stdin
-							cmd.Stdout = os.Stdout
-							cmd.Stderr = os.Stderr
-							if err := cmd.Run(); err != nil {
-								log.Printf("[error] [%v] %v", basename, err)
+							for name, command := range w.Commands {
+								log.Printf("Run %s on %v ...\n", name, strings.Replace(ev.Name, workingDir+"/", "", 1))
+								cmd := exec.Command("sh", "-c", command)
+								cmd.Stdin = os.Stdin
+								cmd.Stdout = os.Stdout
+								cmd.Stderr = os.Stderr
+								if err := cmd.Run(); err != nil {
+									log.Printf("[error] [%v] %v", basename, err)
+								}
+								fmt.Printf("\n")
+								commandTriggerDelays[ev.Name] = time.Now()
 							}
-							fmt.Printf("\n")
-							commandTriggerDelays[ev.Name] = time.Now()
 						}
 					}
 				}

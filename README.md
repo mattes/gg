@@ -18,10 +18,12 @@ Create ``gg.yaml`` file in your working directory.
 watch:
 
 - pattern: "*.txt"
-  command: "echo hello world, txt"
+  commands:
+    hello: "echo hello world, txt"
 
 - pattern: "*.go"
-  command: "echo hello world, go"
+  command:
+    hello: "echo hello world, go"
 ```
 
 Run ``gg`` afterwards.
